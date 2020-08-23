@@ -2,15 +2,22 @@ require './lib/card'
 require './lib/deck'
 require './lib/player'
 require './lib/turn'
+require './lib/card_generator'
 
 class Game
   attr_reader :player1, :player2, :turn_counter
-  def initialize
-    create_two_players()
+  def initialize(filename = nil)
+    if filename.nil?
+      cards = create_deck_of_cards()
+    else
+      cards = CardGenerator.new(filename).cards
+    end
+    both_decks = create_pile_of_cards_for_each_player(cards)
+    create_two_players(both_decks)
     @turn_counter = 0
   end
 
-  def create_deck_of_shuffled_cards
+  def create_deck_of_cards
     full_deck_of_cards = []
     suits = [:heart, :diamond, :spade, :club]
 
@@ -21,14 +28,13 @@ class Game
         full_deck_of_cards << card
       end
     end
-    Deck.new(full_deck_of_cards.shuffle)
+    full_deck_of_cards
   end
 
-  def create_pile_of_cards_for_each_player
-    deck = create_deck_of_shuffled_cards()
+  def create_pile_of_cards_for_each_player(cards)
     deck1 = Deck.new()
     deck2 = Deck.new()
-    deck.cards.each do |card|
+    cards.shuffle.each do |card|
       if deck1.cards.length < 26
         deck1.add_card(card)
       else
@@ -38,8 +44,7 @@ class Game
     [deck1, deck2]
   end
 
-  def create_two_players
-    both_decks = create_pile_of_cards_for_each_player()
+  def create_two_players(both_decks)
     @player1 = Player.new("Megan", both_decks[0])
     @player2 = Player.new("Aurora", both_decks[1])
   end

@@ -14,7 +14,8 @@ until answer == "GO"
   count += 1
 
   if answer == "GO"
-    game = Game.new
+    filename ="./data/cards.txt"
+    game = Game.new(filename)
     game.start
   else
     p "Please type 'GO' to begin the game!"
