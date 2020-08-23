@@ -1,5 +1,4 @@
 require './lib/card'
-require './lib/deck'
 
 class CardGenerator
   attr_reader :filename, :cards
